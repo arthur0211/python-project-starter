@@ -1,0 +1,96 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "python-project-starter"
+version = "0.1.0"
+description = "A library to help non-technical users initialize and manage Python projects with professional standards."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"} # Choose an appropriate license later
+authors = [
+    { name = "Your Name", email = "your.email@example.com" }, # TODO: Update author details
+]
+dependencies = [
+    # Core dependencies will be added here
+]
+
+[project.optional-dependencies]
+dev = [
+    "uv >= 0.1.18", # Pin UV version for consistency
+    "ruff >= 0.3.0",
+    "pytest >= 7.0.0",
+    "mypy >= 1.8.0",
+    "pre-commit >= 3.6.0",
+    "pytest-cov", # For coverage
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+# Enable default rules (E, F) and common extras
+select = [
+    "E",  # pycodestyle errors
+    "F",  # Pyflakes
+    "W",  # pycodestyle warnings
+    "I",  # isort
+    "N",  # pep8-naming
+    "UP", # pyupgrade
+    "B",  # flake8-bugbear
+    "A",  # flake8-builtins
+    "C4", # flake8-comprehensions
+    "SIM",# flake8-simplify
+    "PT", # flake8-pytest-style
+    "PTH",# flake8-use-pathlib
+]
+ignore = [
+    "E501", # Line too long, handled by formatter
+    "B905", # `zip()` without `strict=`. Requires Python 3.10
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.pyright]
+# Paths to analyze
+include = ["src", "tests"]
+exclude = [
+    "**/node_modules",
+    "**/__pycache__",
+    ".venv",
+    ".git",
+]
+
+typeCheckingMode = "basic" # Start with basic, can move to strict later
+
+# Use warnings for potentially problematic code
+reportMissingImports = "warning"
+reportMissingTypeStubs = "warning"
+reportUnusedVariable = "warning"
+reportUnusedImport = "warning"
+
+# Enforce type hint usage
+reportMissingParameterType = "warning"
+reportMissingReturnType = "warning"
+reportMissingTypeArgument = "warning"
+
+pythonVersion = "3.10" # Match requires-python
+pythonPlatform = "All"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+addopts = "-ra -q --cov=src --cov-report=term-missing"
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+
+# Add this section for Hatch build configuration
+[tool.hatch.build.targets.wheel]
+packages = ["src/project_starter"] 
