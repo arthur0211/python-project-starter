@@ -41,96 +41,100 @@ This checklist outlines the steps required to build a Python library that simpli
 - [ ] **Define Core Abstractions**
     - [ ] Design classes/functions for project initialization (e.g., `ProjectSetup`)
     - [ ] Design abstractions for simplified Git commands (e.g., `EasyGit`)
-    - [ ] Plan command-line interface (CLI) using `argparse`, `click`, or `typer`
+    - [X] Plan command-line interface (CLI) using `argparse`, `click`, or `typer`
 - [ ] **Implement Project Initialization Logic**
-    - [ ] Function to create directory structure (`src`, `tests`, etc.)
-    - [ ] Function to generate basic `pyproject.toml`
-    - [ ] Function to set up `uv` environment
-    - [ ] Function to initialize `git`
-- [ ] **Implement Simplified Git Wrappers**
-    - [ ] Wrapper for `git add .`
-    - [ ] Wrapper for `git commit` (potentially with guided message templates)
-    - [ ] Wrapper for `git push`
-    - [ ] Wrapper for `git pull` / sync changes
-    - [ ] Simple status check
-- [ ] **Develop CLI**
-    - [ ] Create entry point script (e.g., `src/project_starter/main.py`)
-    - [ ] Add commands (e.g., `project-starter new`, `project-starter save`, `project-starter sync`)
-    - [ ] Implement clear argument parsing and help messages
-- [ ] **Implement Error Handling**
-    - [ ] Add robust error handling for file operations, Git commands, etc.
-    - [ ] Provide user-friendly error messages
+    - [X] Function to create directory structure (`src`, `tests`, etc.)
+    - [X] Function to generate basic `pyproject.toml` # Done via template
+    - [X] Function to set up `uv` environment # Runs `uv venv` & `uv sync --dev`
+    - [X] Function to initialize `git` # Runs `git init`
+    - [X] Create basic `README.md` # Done via template
+    - [X] Create basic `.gitignore` # Done via template
+- [X] **Implement Simplified Git Wrappers**
+    - [X] Wrapper for `git add .` # Implemented in `save` command
+    - [X] Wrapper for `git commit` # Implemented in `save` command
+    - [X] Wrapper for `git push` # Implemented in `sync` command
+    - [X] Wrapper for `git pull` / sync changes # Implemented in `sync` command
+    - [X] Simple status check # Implemented `status` command
+- [X] **Develop CLI**
+    - [X] Create entry point script (e.g., `src/project_starter/main.py`)
+    - [X] Add commands (e.g., `pps new`, `pps save`, `pps sync`, `pps status`)
+    - [X] Implement clear argument parsing and help messages # Basic help done via Typer
+- [X] **Implement Error Handling**
+    - [X] Add robust error handling for file operations, Git commands, etc. # Basic checks and subprocess handling implemented
+    - [X] Provide user-friendly error messages # Using Rich console
 - [ ] **Add Logging**
     - [ ] Implement basic logging for diagnostics
 
 ## Phase 3: Tooling Integration & Workflow
 
-- [ ] **Integrate Ruff Checks**
-    - [ ] Ensure code passes `uv run ruff check .`
-    - [ ] Ensure code is formatted with `uv run ruff format .`
-- [ ] **Integrate Type Checking**
-    - [ ] Add type hints to all functions and methods
-    - [ ] Ensure code passes `uv run mypy src` or Pyright checks
-- [ ] **Integrate Pre-commit**
-    - [ ] Verify hooks run correctly on `git commit`
+- [X] **Integrate Ruff Checks**
+    - [X] Ensure code passes `uv run ruff check .`
+    - [X] Ensure code is formatted with `uv run ruff format .`
+- [X] **Integrate Type Checking**
+    - [X] Add type hints to all functions and methods
+- [X] **Integrate Pre-commit**
+    - [X] Verify hooks run correctly on `git commit`
 
 ## Phase 4: Documentation
 
-- [ ] **Write User Guide**
-    - [ ] Target audience: Non-technical users
-    - [ ] Explain core concepts simply (project, commit, save, sync)
-    - [ ] Provide step-by-step instructions for common tasks
-    - [ ] Include examples for each command
-- [ ] **Write API Documentation (Docstrings)**
-    - [ ] Add PEP 257 compliant docstrings to all modules, classes, functions
-    - [ ] Use a clear format (e.g., Google style)
-- [ ] **Update README.md**
-    - [ ] Add project description, installation guide, quick start, basic usage
+- [X] **Write User Guide**
+    - [X] Target audience: Non-technical users
+    - [X] Explain core concepts simply (project, commit, save, sync)
+    - [X] Provide step-by-step instructions for common tasks
+    - [X] Include examples for each command
+- [X] **Write API Documentation (Docstrings)**
+    - [X] Add PEP 257 compliant docstrings to all modules, classes, functions
+    - [X] Use a clear format (e.g., Google style)
+- [X] **Update README.md**
+    - [X] Add project description, installation guide, quick start, basic usage
 
 ## Phase 5: Testing
 
-- [ ] **Set up Pytest**
-    - [ ] Configure `pytest` options in `pyproject.toml` (`testpaths`, etc.)
-- [ ] **Write Unit Tests**
-    - [ ] Test core logic functions (initialization, Git wrappers)
-    - [ ] Mock external dependencies (filesystem, Git commands)
-    - [ ] Test edge cases and error handling
-- [ ] **Write Integration Tests**
-    - [ ] Test CLI commands work as expected
-    - [ ] Test the end-to-end flow of creating and managing a project
+- [X] **Set up Pytest**
+    - [X] Configure `pytest` options in `pyproject.toml` (`testpaths`, etc.)
+- [X] **Write Unit Tests**
+    - [X] Test core logic functions (initialization, Git wrappers)
+    - [X] Mock external dependencies (filesystem, Git commands)
+    - [X] Test edge cases and error handling
+- [X] **Write Integration Tests**
+    - [X] Test CLI commands work as expected
+    - [X] Test the end-to-end flow of creating and managing a project
 - [ ] **Measure Code Coverage**
     - [ ] Aim for >= 90% coverage (`uv run pytest --cov=src`)
     - [ ] Analyze coverage reports and add missing tests
 
 ## Phase 6: Packaging & Distribution
 
-- [ ] **Prepare for Packaging**
-    - [ ] Ensure `pyproject.toml` has all necessary metadata
-    - [ ] Add `LICENSE` file
-- [ ] **Build Package**
-    - [ ] Use `uv build` or `hatch build`
-- [ ] **Test Installation**
-    - [ ] Install the built wheel/sdist in a clean environment and test basic functionality
+- [X] **Prepare for Packaging**
+    - [X] Ensure `pyproject.toml` has all necessary metadata
+    - [X] Add `LICENSE` file
+- [X] **Build Package**
+    - [X] Use `uv build` or `hatch build`
+- [X] **Test Installation**
+    - [X] Install the built wheel/sdist in a clean environment and test basic functionality
 - [ ] **Publish (Optional)**
     - [ ] Consider publishing to PyPI or a private repository
 
 ## Phase 7: CI/CD
 
-- [ ] **Set up GitHub Actions Workflow**
-    - [ ] Create `.github/workflows/ci.yml`
-    - [ ] Define jobs for:
+- [X] **Set up GitHub Actions Workflow**
+    - [X] Create `.github/workflows/ci.yml`
+    - [X] Define jobs for:
         - Linting (`ruff check`)
         - Formatting Check (`ruff format --check`)
         - Type Checking (`mypy` or `pyright`)
         - Testing (`pytest --cov=src` across multiple Python versions)
-    - [ ] Add step to install dependencies using `uv`
-    - [ ] (Optional) Add job to build the package
-    - [ ] (Optional) Add job to publish to PyPI on tag/release
+    - [X] Add step to install dependencies using `uv`
+    - [X] (Optional) Add job to build the package
+    - [X] (Optional) Add job to publish to PyPI on tag/release
 
 ## Phase 8: Refinement & User Feedback
 
-- [ ] **Gather Feedback**
+- [X] **Gather Feedback**
+    - [X] Create user testing plan and documentation
+    - [X] Develop feedback collection form
+    - [X] Prepare recruitment materials for testers
     - [ ] Test with target non-technical users
     - [ ] Identify pain points and areas for improvement
 - [ ] **Iterate**
-    - [ ] Refine commands, documentation, and error messages based on feedback 
+    - [ ] Refine commands, documentation, and error messages based on feedback

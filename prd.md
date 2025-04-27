@@ -280,7 +280,7 @@ pythonpath = ["."]
 1. **Python Extension by Microsoft**
    This remains the core extension for Python development in VS Code, providing essential features like IntelliSense, debugging support, and Jupyter Notebook integration. With over 50 million downloads, it's considered a must-have for Python developers of all experience levels.
 
-2. **Python Debugger** 
+2. **Python Debugger**
    This extension is now automatically installed with the Python extension and provides the necessary tools for debugging Python applications within VS Code. It supports various debugging scenarios including multi-threaded applications, web applications, and remote debugging.
 
 3. **Ruff Extension**
@@ -445,7 +445,7 @@ cruft update  # Apply template updates to the project
      - id: end-of-file-fixer
      - id: check-yaml
      - id: check-added-large-files
-   
+
    - repo: https://github.com/astral-sh/ruff-pre-commit
      rev: v0.3.0
      hooks:
@@ -486,13 +486,13 @@ Example of good docstring formatting:
 def calculate_factorial(n):
     """
     Calculate the factorial of a number.
-    
+
     Args:
         n (int): The number to calculate the factorial of.
-    
+
     Returns:
         int: The factorial of the number.
-    
+
     Raises:
         ValueError: If n is negative.
     """
