@@ -141,4 +141,4 @@ Thank you for your feedback! Your input will help us make Python Project Starter
 
 Please submit this form by:
 - Creating a GitHub issue at [https://github.com/username/python-project-starter/issues](https://github.com/username/python-project-starter/issues)
-- Emailing it to: example@example.com 
+- Emailing it to: example@example.com

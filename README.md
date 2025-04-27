@@ -9,6 +9,23 @@ A tool to help non-technical users initialize and manage Python projects with pr
 - **Git Made Easy**: Simplified Git commands for saving and syncing changes
 - **Best Practices Built-in**: Follows Python community standards for project structure and tooling
 
+## Project Status
+
+**Current Development Stage**: Beta
+
+This project is currently in active development with most core features implemented. We're now in the user testing phase and seeking feedback from non-technical Python users.
+
+**Next Steps**:
+- Conducting user testing sessions (planned for May 2025)
+- Implementing improvements based on feedback
+- Publishing to PyPI for wider availability
+
+**Contribution Status**: Open to contributions, especially for:
+- Improving error handling
+- Adding more templates
+- Enhancing documentation
+- Fixing identified bugs
+
 ## Installation
 
 ### Prerequisites
@@ -36,10 +53,10 @@ cd python-project-starter
 
 # Create a virtual environment and install dependencies
 uv venv
-uv sync --dev
+uv pip install -e ".[dev]"
 
 # Install the package in development mode
-pip install -e .
+# Already done by the command above
 ```
 
 ## Quick Start

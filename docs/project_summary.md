@@ -88,4 +88,4 @@ Python Project Starter (PPS) is a command-line tool designed to help non-technic
 
 ## Conclusion
 
-The Python Project Starter tool has met its core objectives of simplifying Python project setup and management for non-technical users. With a focus on user testing and iterative improvement, we can continue to refine the tool to better serve its target audience and reduce barriers to entry for Python development. 
+The Python Project Starter tool has met its core objectives of simplifying Python project setup and management for non-technical users. With a focus on user testing and iterative improvement, we can continue to refine the tool to better serve its target audience and reduce barriers to entry for Python development.

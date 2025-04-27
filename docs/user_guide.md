@@ -268,4 +268,4 @@ As you become more comfortable with PPS, you might want to:
 3. Add testing to your project
 4. Set up continuous integration
 
-Remember that PPS is designed to help you focus on writing code rather than managing project infrastructure, so you can gradually learn these more advanced concepts as needed. 
+Remember that PPS is designed to help you focus on writing code rather than managing project infrastructure, so you can gradually learn these more advanced concepts as needed.

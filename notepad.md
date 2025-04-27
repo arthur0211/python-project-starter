@@ -55,7 +55,7 @@ This file contains notes, observations, design decisions, and potential improvem
       * Publishing to PyPI on tag release (conditional)
     * Each step uses proper dependency installation with pip/uv
     * Set up artifacts to store built packages between jobs
-*   **(Current)** Next: Move to Phase 8 - Refinement & User Feedback:
+*   ~~**(Current)** Next: Move to Phase 8 - Refinement & User Feedback:~~
     * Plan and execute user testing with non-technical users
     * Create a feedback collection mechanism (e.g., GitHub issues)
     * Identify common pain points and usability issues
@@ -70,3 +70,38 @@ This file contains notes, observations, design decisions, and potential improvem
 *   ~~**(Current)** Starting implementation of the `new` command logic in `src/project_starter/main.py`.~~
 *   ~~**(Current)** Need to implement simplified Git wrappers (`save`, `sync`).~~
 *   ~~**(Current)** Phase 2 (Core commands) is mostly complete. Next steps involve Phase 3 (Tooling Integration - Ruff, Mypy, Pre-commit) or Phase 4 (Documentation) / Phase 5 (Testing).~~
+
+## Atualizações de Dependências e Ferramentas (Maio 2024)
+
+*   ~~**(Current)** Identificada a necessidade de atualizar UV e Ruff para versões mais recentes:~~
+    * UV: 0.1.18 → 0.2.24
+    * Ruff: 0.3.0 → 0.6.0+
+
+*   ~~**(Current)** Criado documento `atualizacao.md` detalhando os pontos de atualização necessários:~~
+    * Atualização dos comandos UV no código (especialmente substituir `uv sync --dev` por `uv pip install -e ".[dev]"`)
+    * Ativação do modo preview do Ruff para recurso experimentais
+    * Adição de novas regras de lint no Ruff (RET, SLF, ARG, ERA, etc.)
+    * Atualização do template _pyproject.toml.template para refletir as novas versões
+    * Modificação do pipeline CI/CD para utilizar as versões mais recentes
+
+*   ~~**(Current)** Próximos passos imediatos:~~
+    * ~~Atualizar pyproject.toml do projeto principal~~ **Concluído:** Atualizados UV para 0.2.0+ e Ruff para 0.6.0+
+    * ~~Modificar o código em main.py para utilizar os novos comandos UV~~ **Concluído:** Substituído `uv sync --dev` por `uv pip install -e ".[dev]"`
+    * ~~Testar a instalação e uso com as novas versões~~ **Concluído:** Instalação e testes realizados com sucesso
+    * ~~Verificar compatibilidade com projetos existentes~~ **Concluído:** Compatibilidade verificada
+
+*   ~~**(Current)** Lista de arquivos que precisam ser atualizados:~~
+    * ✓ pyproject.toml (principal) - Atualizado
+    * ✓ src/project_starter/main.py (código) - Atualizado
+    * ✓ src/project_starter/templates/_pyproject.toml.template (template) - Atualizado
+    * ✓ .github/workflows/python-ci.yml (CI/CD) - Atualizado
+    * ✓ README.md - Atualizado
+
+*   **Próximas melhorias futuras:**
+    * Considerar a adição de mais exemplos na documentação sobre os novos comandos UV
+    * Monitorar atualizações de Ruff e UV para futuras melhorias
+    * Implementar testes automatizados para verificar compatibilidade com novas versões
+
+# Plano Detalhado para Fase 8 - Testes com Usuários
+
+Após a publicação bem-sucedida do projeto no GitHub em https://github.com/arthur0211/python-project-starter, o foco agora deve ser na obtenção de feedback de usuários reais.

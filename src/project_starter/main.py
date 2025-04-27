@@ -20,12 +20,13 @@ Example usage:
 For more details, see the user guide in the docs/ directory.
 """
 
-import typer
-from typing_extensions import Annotated
-import pathlib
 import importlib.resources
+import pathlib
 import subprocess
 from subprocess import CompletedProcess
+from typing import Annotated
+
+import typer
 from rich.console import Console
 
 # Define standard directory names
@@ -38,27 +39,31 @@ TEMPLATES_DIR = "templates"
 def _create_directory(path: pathlib.Path, console: Console) -> bool:
     """
     Create a directory if it doesn't exist.
-    
+
     Args:
         path: Path to the directory to create
         console: Rich console for output
-        
+
     Returns:
         True if directory exists or was created successfully, False otherwise
     """
     try:
         if path.exists():
             if not path.is_dir():
-                console.print(f"[bold red]Error:[/bold red] Path '{path}' exists but is not a directory.")
+                console.print(
+                    f"[bold red]Error:[/bold red] Path '{path}' exists but is not a directory."
+                )
                 return False
             console.print(f"[yellow]Directory already exists:[/yellow] {path}")
             return True
-        
+
         path.mkdir(parents=True, exist_ok=True)
         console.print(f"[green]Created directory:[/green] {path}")
         return True
     except Exception as e:
-        console.print(f"[bold red]Error:[/bold red] Failed to create directory '{path}': {str(e)}")
+        console.print(
+            f"[bold red]Error:[/bold red] Failed to create directory '{path}': {str(e)}"
+        )
         return False
 
 
@@ -66,12 +71,12 @@ def _create_directory(path: pathlib.Path, console: Console) -> bool:
 def _create_file(path: pathlib.Path, content: str, console: Console) -> bool:
     """
     Create a file with specified content if it doesn't exist.
-    
+
     Args:
         path: Path to the file to create
         content: Content to write to the file
         console: Rich console for output
-        
+
     Returns:
         True if file exists or was created successfully, False otherwise
     """
@@ -79,17 +84,17 @@ def _create_file(path: pathlib.Path, content: str, console: Console) -> bool:
         if path.exists():
             console.print(f"[yellow]File already exists:[/yellow] {path}")
             return True
-        
+
         # Ensure parent directory exists
-        if not path.parent.exists():
-            if not _create_directory(path.parent, console):
-                return False
-                
-        path.write_text(content)
-        console.print(f"[green]Created file:[/green] {path}")
-        return True
+        if path.parent.exists() or _create_directory(path.parent, console):
+            path.write_text(content)
+            console.print(f"[green]Created file:[/green] {path}")
+            return True
+        return False
     except Exception as e:
-        console.print(f"[bold red]Error:[/bold red] Failed to create file '{path}': {str(e)}")
+        console.print(
+            f"[bold red]Error:[/bold red] Failed to create file '{path}': {str(e)}"
+        )
         return False
 
 
@@ -97,11 +102,11 @@ def _create_file(path: pathlib.Path, content: str, console: Console) -> bool:
 def _read_template(template_name: str, console: Console) -> str | None:
     """
     Read a template file's content.
-    
+
     Args:
         template_name: The name of the template file to read.
         console: Rich console for output.
-        
+
     Returns:
         The content of the template file as a string, or None if an error occurred.
     """
@@ -110,21 +115,25 @@ def _read_template(template_name: str, console: Console) -> str | None:
         template_path = resources / TEMPLATES_DIR / template_name
         return template_path.read_text()
     except (FileNotFoundError, ImportError) as e:
-        console.print(f"[bold red]Error:[/bold red] Could not read template '{template_name}'. {str(e)}")
+        console.print(
+            f"[bold red]Error:[/bold red] Could not read template '{template_name}'. {str(e)}"
+        )
         return None
 
 
 # Helper function to run shell commands
-def _run_command(command: list[str], cwd: pathlib.Path, console: Console, capture: bool = True) -> tuple[bool, str | None]:
+def _run_command(
+    command: list[str], cwd: pathlib.Path, console: Console, capture: bool = True
+) -> tuple[bool, str | None]:
     """
     Run a shell command.
-    
+
     Args:
         command: The command to run as a list of strings.
         cwd: The working directory in which to run the command.
         console: Rich console for output.
         capture: Whether to capture and return the command output.
-        
+
     Returns:
         A tuple containing:
         - Boolean indicating if the command succeeded
@@ -133,23 +142,16 @@ def _run_command(command: list[str], cwd: pathlib.Path, console: Console, captur
     try:
         if capture:
             result: CompletedProcess[str] = subprocess.run(
-                command,
-                cwd=cwd,
-                check=True,
-                text=True,
-                capture_output=True
+                command, cwd=cwd, check=True, text=True, capture_output=True
             )
             return True, result.stdout
-        else:
-            result_no_capture: CompletedProcess[str] = subprocess.run(
-                command,
-                cwd=cwd,
-                check=True,
-                text=True
-            )
-            return True, None
+
+        subprocess.run(command, cwd=cwd, check=True, text=True)
+        return True, None
     except subprocess.SubprocessError as e:
-        console.print(f"[bold red]Command Error:[/bold red] {' '.join(command)} failed with {str(e)}")
+        console.print(
+            f"[bold red]Command Error:[/bold red] {' '.join(command)} failed with {str(e)}"
+        )
         return False, None
 
 
@@ -168,30 +170,30 @@ def new(
         ),
     ],
     target_dir: Annotated[
-        pathlib.Path,
+        pathlib.Path | None,
         typer.Option(
             "--dir",
             "-d",
             help="The directory where the project will be created (defaults to current directory).",
         ),
-    ] = pathlib.Path.cwd(),
+    ] = None,
 ) -> None:
     """
     Creates a new Python project directory with recommended structure and tooling.
-    
+
     This command creates a new Python project following modern best practices, including:
     - Proper directory structure (src layout)
     - Configured pyproject.toml with essential tools
     - Git repository initialization
     - Virtual environment creation with UV
     - Installation of development dependencies
-    
+
     The project name should be in lowercase with underscores (e.g., my_cool_project).
-    
+
     Args:
         project_name: Name for the new project (lowercase with underscores)
         target_dir: Optional directory where the project will be created
-    
+
     Examples:
         `pps new my_cool_project`
         `pps new data_analysis_tool --dir ~/Projects`
@@ -203,21 +205,21 @@ def new(
         )
         raise typer.Exit(code=1)
 
+    # Define target_dir if it's None
+    if target_dir is None:
+        target_dir = pathlib.Path.cwd()
+
     # Determine the root directory for the new project
-    if target_dir:
-        # Ensure target_dir exists if specified
-        if not target_dir.is_dir():
-            typer.echo(
-                f"Error: Specified target directory does not exist: {target_dir}",
-                err=True,
-            )
-            raise typer.Exit(code=1)
-        root_path = target_dir.resolve() / project_name
-    else:
-        root_path = pathlib.Path.cwd() / project_name
+    if not target_dir.is_dir():
+        typer.echo(
+            f"Error: Specified target directory does not exist: {target_dir}",
+            err=True,
+        )
+        raise typer.Exit(code=1)
+    root_path = target_dir.resolve() / project_name
 
     # Use Console() directly instead of typer.rich_utils
-    console = Console(stderr=True) 
+    console = Console(stderr=True)
     console.print(f"Initializing new project: '{project_name}' in '{root_path}'")
 
     # --- Create Root Directory ---
@@ -242,10 +244,12 @@ def new(
     # Create __init__.py first
     init_py_path = src_path / "__init__.py"
     if not _create_file(init_py_path, "", console):
-        console.print(f"[bold red]Fatal Error:[/bold red] Failed to create essential file '{init_py_path}'.")
+        console.print(
+            f"[bold red]Fatal Error:[/bold red] Failed to create essential file '{init_py_path}'."
+        )
         # Consider cleanup
         raise typer.Exit(code=1)
-        
+
     # Now create files from templates
     template_files_to_create = {
         "_gitignore.template": root_path / ".gitignore",
@@ -256,17 +260,20 @@ def new(
     for template_name, target_path in template_files_to_create.items():
         template_content = _read_template(template_name, console)
         if template_content is None:
-            console.print(f"[bold red]Fatal Error:[/bold red] Cannot proceed without template '{template_name}'.")
+            console.print(
+                f"[bold red]Fatal Error:[/bold red] Cannot proceed without template '{template_name}'."
+            )
             # Consider cleanup
             raise typer.Exit(code=1)
-        
+
         content = template_content.format(
-            project_name=project_name,
-            package_name=package_name
+            project_name=project_name, package_name=package_name
         )
-            
+
         if not _create_file(target_path, content, console):
-            console.print(f"[bold red]Fatal Error:[/bold red] Failed to create essential file '{target_path}'.")
+            console.print(
+                f"[bold red]Fatal Error:[/bold red] Failed to create essential file '{target_path}'."
+            )
             # Consider cleanup
             raise typer.Exit(code=1)
 
@@ -288,16 +295,16 @@ def new(
         )
         # Exiting here might be safer if venv fails
         raise typer.Exit(code=1)
-    else:
-        # Attempt to install dev dependencies only if venv creation succeeded
-        console.print("\n--- Installing Development Dependencies (uv) ---")
-        uv_sync_success, _ = _run_command(
-            ["uv", "sync", "--dev"], cwd=root_path, console=console
+
+    # Attempt to install dev dependencies only if venv creation succeeded
+    console.print("\n--- Installing Development Dependencies (uv) ---")
+    uv_sync_success, _ = _run_command(
+        ["uv", "pip", "install", "-e", ".[dev]"], cwd=root_path, console=console
+    )
+    if not uv_sync_success:
+        console.print(
+            "[yellow]Warning:[/yellow] Failed to install dev dependencies with uv. Please run 'uv pip install -e \".[dev]\"' manually after activating the environment."
         )
-        if not uv_sync_success:
-            console.print(
-                "[yellow]Warning:[/yellow] Failed to install dev dependencies with uv. Please run 'uv sync --dev' manually after activating the environment."
-            )
 
     # --- Final Success Message ---
     console.print(
@@ -318,17 +325,17 @@ def save(
 ) -> None:
     """
     Saves the current state of your project (stages all changes and commits).
-    
+
     This command combines the standard Git workflow of staging and committing
     changes into a single, easy-to-use command. It's equivalent to running:
         `git add .`
         `git commit -m "Your message"`
-    
+
     The command must be run from within your project directory.
-    
+
     Args:
         message: A description of the changes you made (required)
-    
+
     Examples:
         `pps save -m "Add user authentication feature"`
         `pps save -m "Fix bug in data processing"`
@@ -381,20 +388,20 @@ def save(
 def sync() -> None:
     """
     Updates your local project with remote changes and pushes your changes.
-    
+
     This command synchronizes your local repository with the remote repository
     by first pulling any changes from the remote, then pushing your local
     changes. It's equivalent to running:
         `git pull`
         `git push`
-    
+
     This assumes the remote repository ('origin') and upstream branch are already
     configured. For new repositories, you'll need to set up the remote first
     using standard Git commands.
-    
+
     Examples:
         `pps sync`
-    
+
     Common issues:
         - If you haven't set up a remote repository, this will fail
         - If there are merge conflicts, you'll need to resolve them manually
@@ -446,41 +453,47 @@ def sync() -> None:
 @app.command()
 def status(
     working_dir: Annotated[
-        pathlib.Path,
+        pathlib.Path | None,
         typer.Option(
             "--dir",
             "-d",
             help="The project directory to check status for (defaults to current directory).",
         ),
-    ] = pathlib.Path.cwd(),
+    ] = None,
 ) -> None:
     """
     Check the status of the project setup and configuration.
-    
+
     This command provides an overview of your project's current state, showing:
     - Git status (what files have been modified)
     - Project structure validation (correct directories and files)
     - Environment information
     - Tool configuration status
-    
+
     It's a helpful command to run when you want to see what files you've changed
     or to verify that your project structure is correct.
-    
+
     Args:
         working_dir: Optional directory to check (defaults to current directory)
-    
+
     Examples:
         `pps status`
         `pps status --dir ./my_project`
     """
+    # Define working_dir if it's None
+    if working_dir is None:
+        working_dir = pathlib.Path.cwd()
+
     console = Console(stderr=True)
     console.print("[bold blue]Checking project status...[/bold blue]")
-    
+
     project_name = working_dir.name
-    
+
     # Check if git is initialized
-    success, git_status = _run_command(["git", "status", "--porcelain"], working_dir, console)
-    
+    success, git_status = _run_command(
+        ["git", "status", "--porcelain"], working_dir, console
+    )
+
     if success:
         if git_status and git_status.strip():
             console.print("[yellow]Git:[/yellow] Repository has uncommitted changes.")
@@ -488,37 +501,45 @@ def status(
             console.print("[green]Git:[/green] Repository is clean.")
     else:
         console.print("[red]Git:[/red] Not a git repository or git not installed.")
-    
+
     # Check project structure
     src_path = working_dir / SRC_DIR
     tests_path = working_dir / TESTS_DIR
-    
+
     package_name = project_name.replace("-", "_").lower()
     package_path = src_path / package_name
-    
+
     if not src_path.exists():
         console.print(f"[red]Structure:[/red] Missing source directory ({SRC_DIR}/).")
     elif not package_path.exists():
-        console.print(f"[red]Structure:[/red] Missing package directory ({SRC_DIR}/{package_name}/).")
+        console.print(
+            f"[red]Structure:[/red] Missing package directory ({SRC_DIR}/{package_name}/)."
+        )
     else:
-        console.print(f"[green]Structure:[/green] Source directory structure looks good.")
-    
+        console.print(
+            "[green]Structure:[/green] Source directory structure looks good."
+        )
+
     if not tests_path.exists():
-        console.print(f"[yellow]Structure:[/yellow] Missing tests directory ({TESTS_DIR}/).")
+        console.print(
+            f"[yellow]Structure:[/yellow] Missing tests directory ({TESTS_DIR}/)."
+        )
     else:
-        console.print(f"[green]Structure:[/green] Tests directory exists.")
-    
+        console.print("[green]Structure:[/green] Tests directory exists.")
+
     # Check for essential files
     essential_files = [
         "pyproject.toml",
         "README.md",
         ".gitignore",
     ]
-    
+
     missing_files = [f for f in essential_files if not (working_dir / f).exists()]
-    
+
     if missing_files:
-        console.print(f"[red]Files:[/red] Missing essential files: {', '.join(missing_files)}")
+        console.print(
+            f"[red]Files:[/red] Missing essential files: {', '.join(missing_files)}"
+        )
     else:
         console.print("[green]Files:[/green] All essential files exist.")
 
@@ -531,13 +552,13 @@ def _create_project_structure(
 ) -> bool:
     """
     Create the project directory structure.
-    
+
     Args:
         root_path: Path to the project root
         project_name: Name of the project
         package_name: Name of the package (Python module name)
         console: Rich console for output
-        
+
     Returns:
         True if successful, False otherwise
     """
@@ -545,52 +566,59 @@ def _create_project_structure(
     src_path = root_path / SRC_DIR
     tests_path = root_path / TESTS_DIR
     package_path = src_path / package_name
-    
+
     directories_to_create = [
         src_path,
         package_path,
         tests_path,
     ]
-    
+
     for dir_path in directories_to_create:
         if not _create_directory(dir_path, console):
             return False
-    
+
     # --- Create Essential Files ---
     # Create __init__.py first
     init_py_path = package_path / "__init__.py"
     if not _create_file(init_py_path, "", console):
-        console.print(f"[bold red]Fatal Error:[/bold red] Failed to create essential file '{init_py_path}'.")
+        console.print(
+            f"[bold red]Fatal Error:[/bold red] Failed to create essential file '{init_py_path}'."
+        )
         return False
-    
+
     # Initialize tests directory with empty __init__.py
     test_init_path = tests_path / "__init__.py"
     if not _create_file(test_init_path, "", console):
-        console.print(f"[bold red]Warning:[/bold red] Failed to create tests __init__.py file.")
+        console.print(
+            "[bold red]Warning:[/bold red] Failed to create tests __init__.py file."
+        )
         # Not fatal, continue
-    
+
     # Now create files from templates
     template_files_to_create = {
         "_gitignore.template": root_path / ".gitignore",
         "_readme.md.template": root_path / "README.md",
         "_pyproject.toml.template": root_path / "pyproject.toml",
     }
-    
+
     for template_name, target_path in template_files_to_create.items():
         template_content = _read_template(template_name, console)
         if template_content is None:
-            console.print(f"[bold red]Fatal Error:[/bold red] Cannot proceed without template '{template_name}'.")
+            console.print(
+                f"[bold red]Fatal Error:[/bold red] Cannot proceed without template '{template_name}'."
+            )
             return False
-        
+
         content = template_content.format(
-            project_name=project_name,
-            package_name=package_name
+            project_name=project_name, package_name=package_name
         )
-        
+
         if not _create_file(target_path, content, console):
-            console.print(f"[bold red]Fatal Error:[/bold red] Failed to create essential file '{target_path}'.")
+            console.print(
+                f"[bold red]Fatal Error:[/bold red] Failed to create essential file '{target_path}'."
+            )
             return False
-    
+
     return True
 
 

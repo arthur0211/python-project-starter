@@ -1,4 +1,4 @@
-# {project_name}
+# test_project
 
 A brief description of your project.
 

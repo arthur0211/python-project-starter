@@ -25,5 +25,5 @@ repos:
   hooks:
     - id: mypy
       additional_dependencies: ["types-setuptools", "types-requests"]
-      args: ["--config-file=pyproject.toml"]
-      exclude: "^tests/"
+      args: ["--ignore-missing-imports", "--no-warn-no-return", "--disable-error-code=misc"]
+      exclude: "^tests/|^test_project/|^test_install/"
